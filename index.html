@@ -12,6 +12,8 @@
     button:hover { background: #45a049; }
     .result { margin-top: 1.5rem; background: #e8f5e9; padding: 1rem; border-radius: 8px; }
     .share-btn { background: #25D366; color: white; margin-top: 1rem; text-align: center; padding: 10px; border-radius: 8px; text-decoration: none; display: inline-block; font-weight: bold; }
+    .ai-btn { background: #3f51b5; color: white; margin-top: 1rem; text-align: center; padding: 10px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; }
+    .ai-btn:hover { background: #303f9f; }
     footer { margin-top: 2rem; font-size: 0.9rem; text-align: center; color: #888; }
   </style>
 </head>
@@ -35,6 +37,7 @@
     <button onclick="calculateNumerology()">开始计算 🔍</button>
 
     <div id="report" class="result" style="display:none;"></div>
+    <button class="ai-btn" onclick="generateAIDemo()">🧠 使用AI生成更生动解读</button>
     <a id="whatsappShare" class="share-btn" href="#" target="_blank" style="display:none;">📤 分享到 WhatsApp</a>
 
     <footer>© 2025 Youthology 真理派｜Mr. Young 制作</footer>
@@ -52,16 +55,13 @@ function calculateNumerology() {
   const day = birthdate.getDate();
   const year = birthdate.getFullYear();
 
-  // 主宰数计算
   const rulingSum = [...(year + '' + (month < 10 ? '0'+month : month) + (day < 10 ? '0'+day : day))]
     .map(n => parseInt(n)).reduce((a,b) => a + b, 0);
   const ruling = reduceToSingleDigit(rulingSum);
 
-  // 世界年数
   const worldYearSum = [...(targetYear + '')].map(n => parseInt(n)).reduce((a,b) => a + b, 0);
   const worldYear = reduceToSingleDigit(worldYearSum);
 
-  // 个人流年数
   const personalYear = reduceToSingleDigit(worldYear + reduceToSingleDigit(month + day));
 
   const flowMeaning = getFlowYearMeaning(personalYear);
@@ -102,6 +102,16 @@ function getFlowYearMeaning(n) {
     9: { detail: "轮回的最后一年，适合清理、断舍离、疗愈与完成，准备新旅程。", summary: "放下你该放下的，才能迎来全新的。" }
   };
   return meanings[n] || { detail: "", summary: "" };
+}
+
+function generateAIDemo() {
+  const name = document.getElementById('fullName').value.trim();
+  const birthdate = new Date(document.getElementById('birthdate').value);
+  const targetYear = parseInt(document.getElementById('targetYear').value);
+  if (!birthdate || isNaN(targetYear)) return alert("请先填写完整生日和年份");
+
+  const aiDemo = `亲爱的 ${name}，你在 ${targetYear} 的流年能量正处于深层转化的阶段。这一年，是你灵魂“蓄力而不躁动”的关键之年。看似缓慢，其实是宇宙在为你铺路。记得：你的每一次停顿，都是内在力量的积累。✨`;
+  alert(aiDemo);
 }
 </script>
 </body>
