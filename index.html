@@ -3,122 +3,106 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Youthology 真理派｜生命灵数流年计算器</title>
+  <title>Youthology 真理派｜流年生命灵数计算器</title>
   <style>
-    body {
-      font-family: 'Arial', sans-serif;
-      background: #f0f9f7;
-      padding: 20px;
-      color: #333;
-      max-width: 500px;
-      margin: auto;
-    }
-    h1 {
-      text-align: center;
-      color: #136f63;
-    }
-    label {
-      display: block;
-      margin-top: 15px;
-    }
-    input, select, button {
-      width: 100%;
-      padding: 10px;
-      margin-top: 5px;
-      font-size: 1em;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-    }
-    button {
-      background-color: #136f63;
-      color: white;
-      margin-top: 20px;
-    }
-    .result {
-      margin-top: 30px;
-      background: white;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
+    body { font-family: 'Arial', sans-serif; background: #f0fdf4; padding: 2rem; color: #333; }
+    .container { max-width: 600px; margin: auto; background: white; padding: 2rem; border-radius: 16px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    input, select, button { width: 100%; padding: 10px; margin: 0.5rem 0; border-radius: 8px; border: 1px solid #ccc; }
+    button { background: #4caf50; color: white; font-weight: bold; cursor: pointer; }
+    button:hover { background: #45a049; }
+    .result { margin-top: 1.5rem; background: #e8f5e9; padding: 1rem; border-radius: 8px; }
+    .share-btn { background: #25D366; color: white; margin-top: 1rem; text-align: center; padding: 10px; border-radius: 8px; text-decoration: none; display: inline-block; font-weight: bold; }
+    footer { margin-top: 2rem; font-size: 0.9rem; text-align: center; color: #888; }
   </style>
 </head>
 <body>
-  <h1>🔮 生命灵数流年计算器</h1>
-  <p style="text-align: center; font-weight: bold;">由 Youthology 真理派 提供</p>
+  <div class="container">
+    <h2>🔮 Youthology 真理派｜流年生命灵数计算器</h2>
+    <p>请输入你的生日与基本资料，我们将自动为你生成今年的流年运势报告</p>
 
-  <label>出生日期：</label>
-  <input type="date" id="birthdate" />
+    <label>姓名：</label>
+    <input type="text" id="fullName" placeholder="例如：陈大文">
 
-  <label>要查看哪一年：</label>
-  <input type="number" id="targetYear" value="2025" />
+    <label>手机号码：</label>
+    <input type="text" id="phone" placeholder="例如：0123456789">
 
-  <button onclick="calculate()">开始计算</button>
+    <label>生日：</label>
+    <input type="date" id="birthdate">
 
-  <div id="result" class="result" style="display:none;"></div>
+    <label>想查看哪一年的流年运势？</label>
+    <input type="number" id="targetYear" value="2025">
 
-  <script>
-    function sumDigits(str) {
-      return str.split('').reduce((sum, digit) => sum + Number(digit), 0);
-    }
+    <button onclick="calculateNumerology()">开始计算 🔍</button>
 
-    function reduceToOneDigit(num) {
-      while (num > 9) {
-        num = sumDigits(num.toString());
-      }
-      return num;
-    }
+    <div id="report" class="result" style="display:none;"></div>
+    <a id="whatsappShare" class="share-btn" href="#" target="_blank" style="display:none;">📤 分享到 WhatsApp</a>
 
-    function getRulingNumber(dateStr) {
-      const nums = dateStr.replaceAll('-', '').split('').map(Number);
-      return reduceToOneDigit(nums.reduce((a,b) => a + b, 0));
-    }
+    <footer>© 2025 Youthology 真理派｜Mr. Young 制作</footer>
+  </div>
 
-    function getPersonalYear(dateStr, targetYear) {
-      const birthMonth = Number(dateStr.split('-')[1]);
-      const birthDay = Number(dateStr.split('-')[2]);
-      const worldYear = reduceToOneDigit(sumDigits(targetYear.toString()));
-      return reduceToOneDigit(worldYear + reduceToOneDigit(birthMonth + birthDay));
-    }
+<script>
+function calculateNumerology() {
+  const name = document.getElementById('fullName').value.trim();
+  const phone = document.getElementById('phone').value.trim();
+  const birthdate = new Date(document.getElementById('birthdate').value);
+  const targetYear = parseInt(document.getElementById('targetYear').value);
+  if (!birthdate || isNaN(targetYear)) return alert("请填写完整资料");
 
-    function getYearMeaning(yearNum) {
-      const meanings = {
-        1: "新开始的一年，适合创业、行动、展开新计划。要大胆，但有策略。",
-        2: "合作与耐性之年，宜交朋友、培养感情，慢慢来，积累信任。",
-        3: "创意表达年，适合讲故事、社交、搞内容营销，让自己发光。",
-        4: "扎根的一年，适合稳定事业、理财、累积实力，不能急。",
-        5: "变动年，自由与突破，可能会有搬家、跳槽、大改变。跟着心走。",
-        6: "责任与家庭之年，适合关注家庭、健康、关系修复。",
-        7: "内在整理年，适合学习、沉淀、进修、反思，不宜冲动做决定。",
-        8: "成就与金钱之年，适合冲事业、扩展、收割成果。压力也大，要掌控好。",
-        9: "放下、结尾的一年，清理旧包袱，为新人生做准备。适合断舍离。"
-      };
-      return meanings[yearNum] || "未知年份。";
-    }
+  const month = birthdate.getMonth() + 1;
+  const day = birthdate.getDate();
+  const year = birthdate.getFullYear();
 
-    function calculate() {
-      const dateStr = document.getElementById('birthdate').value;
-      const targetYear = Number(document.getElementById('targetYear').value);
+  // 主宰数计算
+  const rulingSum = [...(year + '' + (month < 10 ? '0'+month : month) + (day < 10 ? '0'+day : day))]
+    .map(n => parseInt(n)).reduce((a,b) => a + b, 0);
+  const ruling = reduceToSingleDigit(rulingSum);
 
-      if (!dateStr || !targetYear) {
-        alert("请完整输入生日与年份！");
-        return;
-      }
+  // 世界年数
+  const worldYearSum = [...(targetYear + '')].map(n => parseInt(n)).reduce((a,b) => a + b, 0);
+  const worldYear = reduceToSingleDigit(worldYearSum);
 
-      const rulingNumber = getRulingNumber(dateStr);
-      const personalYear = getPersonalYear(dateStr, targetYear);
-      const meaning = getYearMeaning(personalYear);
+  // 个人流年数
+  const personalYear = reduceToSingleDigit(worldYear + reduceToSingleDigit(month + day));
 
-      const resultDiv = document.getElementById('result');
-      resultDiv.style.display = 'block';
-      resultDiv.innerHTML = `
-        <h3>🧬 主宰数：${rulingNumber}</h3>
-        <h3>📅 ${targetYear} 流年数：${personalYear}</h3>
-        <p>🔮 ${meaning}</p>
-        <hr>
-        <p style="font-size:0.9em; text-align:center">© Youthology 真理派</p>
-      `;
-    }
-  </script>
+  const flowMeaning = getFlowYearMeaning(personalYear);
+
+  const reportText = `🙋‍♂️ 姓名：${name}\n📱 手机：${phone}\n📆 主宰数：${ruling}\n📅 ${targetYear} 的个人流年数：${personalYear}\n🔮 运势解读：${flowMeaning.detail}\n🎁 一句话总结：${flowMeaning.summary}`;
+
+  const reportBox = document.getElementById("report");
+  reportBox.style.display = "block";
+  reportBox.innerHTML = `
+    <strong>🙋‍♂️ 姓名：</strong> ${name}<br>
+    <strong>📱 手机：</strong> ${phone}<br>
+    <strong>📆 主宰数：</strong> ${ruling}<br>
+    <strong>📅 ${targetYear} 的个人流年数：</strong> ${personalYear}<br><br>
+    <strong>🔮 运势解读：</strong><br>${flowMeaning.detail}<br><br>
+    <strong>🎁 送你一句话：</strong><br>${flowMeaning.summary}
+  `;
+
+  const whatsappLink = document.getElementById("whatsappShare");
+  whatsappLink.href = `https://wa.me/?text=${encodeURIComponent(reportText)}`;
+  whatsappLink.style.display = "inline-block";
+}
+
+function reduceToSingleDigit(n) {
+  while (n > 9) n = n.toString().split('').reduce((a, b) => a + parseInt(b), 0);
+  return n;
+}
+
+function getFlowYearMeaning(n) {
+  const meanings = {
+    1: { detail: "这是全新开始的一年，适合种下新计划、启动新事业，是爆发力和决心的一年。", summary: "今年就是行动！想了太久的，现在就开始！" },
+    2: { detail: "这是合作与耐心的一年，适合谈关系、修人脉，也需要慢下来听内心的声音。", summary: "慢一点，才会走得远。" },
+    3: { detail: "这是创意表达、社交活跃的一年。适合说、写、表演、分享你自己。", summary: "今年是曝光年，出来露脸吧！" },
+    4: { detail: "扎实耕耘的一年，适合存钱、建立系统、打根基。务实做事最重要。", summary: "别怕慢，只怕站，慢慢来会很快。" },
+    5: { detail: "变化很多的一年，适合转型、旅游、尝试新事物，但也别太冲动。", summary: "变化不是乱动，是重新找对节奏。" },
+    6: { detail: "责任、家庭、爱的一年。适合照顾家庭、修复关系，做有意义的事。", summary: "付出爱，就会被爱包围。" },
+    7: { detail: "这是反思、学习、疗愈的一年。多内观、少外求，是成长的沉淀期。", summary: "静下来，才听得见自己。" },
+    8: { detail: "成就、金钱、事业的高峰年。适合出击、谈合作、赚钱。", summary: "今年别低调，机会是给有准备的人。" },
+    9: { detail: "轮回的最后一年，适合清理、断舍离、疗愈与完成，准备新旅程。", summary: "放下你该放下的，才能迎来全新的。" }
+  };
+  return meanings[n] || { detail: "", summary: "" };
+}
+</script>
 </body>
 </html>
